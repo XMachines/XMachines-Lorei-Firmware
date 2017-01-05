@@ -1,3 +1,5 @@
+//XMachines Edits
+
 /**
  * Marlin 3D Printer Firmware
  * Copyright (C) 2016 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
@@ -62,8 +64,38 @@
   #define MSG_DISABLE_STEPPERS                "Disable steppers"
 #endif
 #ifndef MSG_AUTO_HOME
-  #define MSG_AUTO_HOME                       "Auto home"
+  #define MSG_AUTO_HOME                       "Home Printer" //Was Auto home
 #endif
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Library XMachines Have Added
+#ifndef MSG_CALIBRATE_Z
+  #define MSG_CALIBRATE_Z                      "Calibrate Z"
+#endif
+#ifndef MSG_CLEAR_Z
+  #define MSG_CLEAR_Z                         "Start Sequence"
+#endif
+#ifndef MSG_PAUSE
+  #define MSG_PAUSE                           "Print Paused"
+#endif
+#ifndef MSG_RETRACT_FIL
+  #define MSG_RETRACT_FIL                     "Retract Filament"
+#endif
+#ifndef MSG_LOAD_UNLOAD_FIL
+  #define MSG_LOAD_UNLOAD_FIL                 "Load Filament"
+#endif
+
+#ifndef MSG_SUMMARY
+  #define MSG_SUMMARY                         "Turn Knob Till" "Nozzle Touches Bed"
+#endif
+#ifndef MSG_START_SEQUENCE
+  #define MSG_START_SEQUENCE                  "Click to Begin"
+#endif
+#ifndef MSG_CONTINUE
+  #define MSG_CONTINUE                        "Click to continue"
+#endif
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 #ifndef MSG_LEVEL_BED_HOMING
   #define MSG_LEVEL_BED_HOMING                "Homing XYZ"
 #endif

@@ -1,5 +1,4 @@
-//Search: look
-
+//XMachines
 
 /**
  * Marlin 3D Printer Firmware
@@ -267,7 +266,7 @@
 #define Y_HOME_BUMP_MM 5
 #define Z_HOME_BUMP_MM 2
 #define HOMING_BUMP_DIVISOR {2, 2, 4}  // Re-Bump Speed Divisor (Divides the Homing Feedrate)
-#define QUICK_HOME  //if this is defined, if both x and y are to be homed, a diagonal move will be performed initially. //look
+#define QUICK_HOME  //if this is defined, if both x and y are to be homed, a diagonal move will be performed initially. 
 
 // When G28 is called, this option will make Y home before X
 //#define HOME_Y_BEFORE_X
@@ -420,7 +419,7 @@
 // Babystepping enables the user to control the axis in tiny amounts, independently from the normal printing process
 // it can e.g. be used to change z-positions in the print startup phase in real-time
 // does not respect endstops!
-//#define BABYSTEPPING   ///look
+//#define BABYSTEPPING
 #if ENABLED(BABYSTEPPING)
   #define BABYSTEP_XY  //not only z, but also XY in the menu. more clutter, more functions
                        //not implemented for deltabots!
@@ -508,11 +507,11 @@ const unsigned int dropsegments = 5; //everything with less than this number of 
 
 // Add support for experimental filament exchange support M600; requires display
 #if ENABLED(ULTIPANEL)
-  //#define FILAMENTCHANGEENABLE   
+  #define FILAMENTCHANGEENABLE   //////////////////////////////XMachines added
   #if ENABLED(FILAMENTCHANGEENABLE)
     #define FILAMENTCHANGE_XPOS 0
     #define FILAMENTCHANGE_YPOS 0
-    #define FILAMENTCHANGE_ZADD 10
+    #define FILAMENTCHANGE_ZADD 0  //default 10
     #define FILAMENTCHANGE_FIRSTRETRACT -2
     #define FILAMENTCHANGE_FINALRETRACT -100
     #define AUTO_FILAMENT_CHANGE                //This extrude filament until you press the button on LCD
