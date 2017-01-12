@@ -477,13 +477,14 @@ inline void line_to_current(AxisEnum axis) {
   static void lcd_sdcard_pause() { 
     card.pauseSDPrint();
     lcd_setstatus(MSG_PAUSE, true);//XMachines
-    enqueue_and_echo_commands_P(PSTR("G91\nG0 Z1\nG90\nG28 X0 Y0"));//XMachines
+    enqueue_and_echo_commands_P(PSTR("G91\nG0 Z3.5\nG90\nG1 X0 Y0"));//XMachines
     }
 
   static void lcd_sdcard_resume() { 
     card.startFileprint(); 
-    enqueue_and_echo_commands_P(PSTR("G91\nG0 Z-1\nG90"));//XMachines
-    lcd_setstatus(MSG_HEATING_COMPLETE, true); //XMachines
+    enqueue_and_echo_commands_P(PSTR("G91\nG0 Z-3.5\nG90"));//XMachines
+    lcd_return_to_status(); //Does this mess up?
+    lcd_setstatus(MSG_PRINTING, true); //XMachines 
     }
 
   static void lcd_sdcard_stop() {
@@ -493,7 +494,7 @@ inline void line_to_current(AxisEnum axis) {
     autotempShutdown();
     cancel_heatup = true;
     lcd_setstatus(MSG_PRINT_ABORTED, true);
-    disable_all_heaters();
+    disable_all_heaters(); //XMachines
     #if FAN_COUNT > 0
     for (uint8_t i = 0; i < FAN_COUNT; i++) fanSpeeds[i] = 0;
     #endif
@@ -506,10 +507,79 @@ inline void line_to_current(AxisEnum axis) {
  * "Main" menu
  *
  */
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Load Unload Menu (Needs work)
+//XMachines
+
+/**
+ * Tasks needed:
+ *
+ *Be careful with this feature being accesible during printing 
+ *What I have here vs. extrude until user clicks scroll wheel?
+ *Instructional menus
+ */
+
+  static void ext1_load(){
+  enqueue_and_echo_commands_P(PSTR("G91\nG1 Z5\nG28 X0 Y0\nM109 S200 T0\nG91\nG1 F5000 E390 T0\nG1 F235 E140 T0\nG90\nM104 S0 T0")); 
+  lcd_return_to_status();
+  }
+
+   static void ext2_load(){
+  //while (LCD_CLICKED, false) {  //TRY THIS VOID LOOP
+    //enqueue_and_echo_commands_P(PSTR("G91\nG1 F1000\nG1 E2 T1"));
+    //}
+  enqueue_and_echo_commands_P(PSTR("G91\nG1 Z5\nG28 X0 Y0\nM109 S200 T1\nG91\nG1 F5000 E390 T1\nG1 F235 E140 T1\nG90\nM104 S0 T1"));
+  lcd_return_to_status();
+  }
+
+  static void ext1_unload(){
+  enqueue_and_echo_commands_P(PSTR("G91\nM109 S200 T0\nG1 F6000\nG1 E-600 T0\nG90\nM104 S0 T0"));
+  lcd_return_to_status();
+  }
+  
+  static void ext2_unload(){
+  enqueue_and_echo_commands_P(PSTR("G91\nM109 S200 T1\nG1 F6000\nG1 E-600 T1\nG90\nM104 S0 T1"));
+  lcd_return_to_status();
+  }
+  
+  static void lcd_lu_ext1(){
+  START_MENU();
+  MENU_ITEM(back, MSG_EXT1);
+  MENU_ITEM(function, MSG_LOAD, ext1_load); //Use the stop on click code
+  MENU_ITEM(function, MSG_UNLOAD, ext1_unload); 
+  END_MENU();
+  }
+ 
+  static void lcd_lu_ext2(){
+  START_MENU();
+  MENU_ITEM(back, MSG_EXT2);
+  MENU_ITEM(function, MSG_LOAD, ext2_load); //use the stop on click code
+  MENU_ITEM(function, MSG_UNLOAD, ext2_unload); 
+  END_MENU();
+  }
+ 
+  static void lcd_load_unload_menu(){
+  START_MENU();
+  MENU_ITEM(back,MSG_PREPARE);
+  MENU_ITEM(submenu, MSG_EXT1, lcd_lu_ext1 );
+  MENU_ITEM(submenu, MSG_EXT2, lcd_lu_ext2);
+  END_MENU();
+  }
+
+  static void lcd_utilities_menu() {
+  START_MENU();
+  MENU_ITEM(back,MSG_MAIN);
+  MENU_ITEM(submenu, MSG_LOAD_UNLOAD, lcd_load_unload_menu);
+  END_MENU();
+  }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 static void lcd_main_menu() {
   START_MENU();
   MENU_ITEM(back, MSG_WATCH);
+
+  MENU_ITEM(submenu, MSG_UTILITIES, lcd_utilities_menu); //XMachines
+  
   if (movesplanned() || IS_SD_PRINTING) {
     MENU_ITEM(submenu, MSG_TUNE, lcd_tune_menu);
   }
@@ -886,6 +956,7 @@ void lcd_cooldown() {
   #endif
   disable_all_heaters();
   lcd_return_to_status();
+  lcd_setstatus(WELCOME_MSG, true); //XMachines
 }
 
 #if ENABLED(SDSUPPORT) && ENABLED(MENU_ADDAUTOSTART)
@@ -1097,7 +1168,7 @@ void lcd_cooldown() {
 #endif  // MANUAL_BED_LEVELING
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
+/**
 //Step 5 - Var is saved to Z-Offset. Conclusion Page. Click Wheel to return to main menu
   static void lcd_sequence_conclusion() {
   START_MENU();
@@ -1125,7 +1196,7 @@ void lcd_cooldown() {
 //  MENU_ITEM(cancel, MSG_PREPARE);
   END_MENU();
 }
-//*/
+*/
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
@@ -1133,8 +1204,6 @@ void lcd_cooldown() {
  * "Prepare" submenu
  *
  */
-
- 
 static void lcd_prepare_menu() {
   START_MENU();
 
@@ -1152,10 +1221,10 @@ static void lcd_prepare_menu() {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///
-  //NEW Section For Auto-Z Calibrate
+  //NEW Section For Auto-Z Calibrate XMachines
   //
-  MENU_ITEM(submenu , MSG_CALIBRATE_Z , lcd_set_z_offset_menu); //Click this to see summary page
-//*/
+  //MENU_ITEM(submenu , MSG_CALIBRATE_Z , lcd_set_z_offset_menu); //Click this to see summary page
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   //

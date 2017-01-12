@@ -507,13 +507,13 @@ const unsigned int dropsegments = 5; //everything with less than this number of 
 
 // Add support for experimental filament exchange support M600; requires display
 #if ENABLED(ULTIPANEL)
-  #define FILAMENTCHANGEENABLE   //////////////////////////////XMachines added
+  #define FILAMENTCHANGEENABLE   //XMachines
   #if ENABLED(FILAMENTCHANGEENABLE)
     #define FILAMENTCHANGE_XPOS 0
     #define FILAMENTCHANGE_YPOS 0
-    #define FILAMENTCHANGE_ZADD 0  //default 10
-    #define FILAMENTCHANGE_FIRSTRETRACT -2
-    #define FILAMENTCHANGE_FINALRETRACT -100
+    #define FILAMENTCHANGE_ZADD 5  //default 10
+    #define FILAMENTCHANGE_FIRSTRETRACT -5
+    #define FILAMENTCHANGE_FINALRETRACT -620
     #define AUTO_FILAMENT_CHANGE                //This extrude filament until you press the button on LCD
     #define AUTO_FILAMENT_CHANGE_LENGTH 0.04    //Extrusion length on automatic extrusion loop
     #define AUTO_FILAMENT_CHANGE_FEEDRATE 300   //Extrusion feedrate (mm/min) on automatic extrusion loop

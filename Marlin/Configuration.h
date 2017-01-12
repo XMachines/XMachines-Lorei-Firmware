@@ -21,6 +21,17 @@
 
 //Version: Release Date 01/04/17
 #define VERSION "1.1.0"
+/**
+ * New Features Include:
+
+ * Filament Load/Unload 
+ * Updated pause/resume script
+ * Change Filament mid-print
+ * New Splashscreen
+ * Laser Engraver Support
+ */
+
+
 
 /**
  * Marlin 3D Printer Firmware

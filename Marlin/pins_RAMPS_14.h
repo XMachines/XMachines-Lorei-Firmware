@@ -1,5 +1,5 @@
 //XMachines Edits
-//For XMachines Controllerboard
+//For XMachines Custom Controllerboard
 
 /**
  * Marlin 3D Printer Firmware
