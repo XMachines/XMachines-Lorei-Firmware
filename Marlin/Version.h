@@ -1,3 +1,5 @@
+//XMachines
+
 /**
  * Marlin 3D Printer Firmware
  * Copyright (C) 2016 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
@@ -29,7 +31,10 @@
 /**
  * Marlin release version identifier
  */
-#define SHORT_BUILD_VERSION "1.1.0-RC6"
+
+
+ 
+#define SHORT_BUILD_VERSION VERSION
 
 /**
  * Verbose version identifier which should contain a reference to the location
@@ -52,7 +57,7 @@
 /**
  * Defines a generic printer name to be output to the LCD after booting Marlin.
  */
-#define MACHINE_NAME "3D Printer"
+#define MACHINE_NAME "Lorei"
 
 /**
  * The SOURCE_CODE_URL is the location where users will find the Marlin Source

@@ -1,3 +1,6 @@
+//XMachines Edits
+// Lots of //// denotes where I am making changes
+
 /**
  * Marlin 3D Printer Firmware
  * Copyright (C) 2016 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
@@ -88,7 +91,7 @@ static void lcd_status_screen();
   const float manual_feedrate[] = MANUAL_FEEDRATE;
   static void lcd_main_menu();
   static void lcd_tune_menu();
-  static void lcd_prepare_menu();
+  static void lcd_prepare_menu(); 
   static void lcd_move_menu();
   static void lcd_control_menu();
   static void lcd_control_temperature_menu();
@@ -471,9 +474,18 @@ inline void line_to_current(AxisEnum axis) {
 
 #if ENABLED(SDSUPPORT)
 
-  static void lcd_sdcard_pause() { card.pauseSDPrint(); }
+  static void lcd_sdcard_pause() { 
+    card.pauseSDPrint();
+    lcd_setstatus(MSG_PAUSE, true);//XMachines
+    enqueue_and_echo_commands_P(PSTR("G91\nG0 Z3.5\nG90\nG1 X0 Y0"));//XMachines
+    }
 
-  static void lcd_sdcard_resume() { card.startFileprint(); }
+  static void lcd_sdcard_resume() { 
+    card.startFileprint(); 
+    enqueue_and_echo_commands_P(PSTR("G91\nG0 Z-3.5\nG90"));//XMachines
+    lcd_return_to_status(); //Does this mess up?
+    lcd_setstatus(MSG_PRINTING, true); //XMachines 
+    }
 
   static void lcd_sdcard_stop() {
     quickStop();
@@ -482,7 +494,7 @@ inline void line_to_current(AxisEnum axis) {
     autotempShutdown();
     cancel_heatup = true;
     lcd_setstatus(MSG_PRINT_ABORTED, true);
-    disable_all_heaters();
+    disable_all_heaters(); //XMachines
     #if FAN_COUNT > 0
     for (uint8_t i = 0; i < FAN_COUNT; i++) fanSpeeds[i] = 0;
     #endif
@@ -495,10 +507,79 @@ inline void line_to_current(AxisEnum axis) {
  * "Main" menu
  *
  */
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Load Unload Menu (Needs work)
+//XMachines
+
+/**
+ * Tasks needed:
+ *
+ *Be careful with this feature being accesible during printing 
+ *What I have here vs. extrude until user clicks scroll wheel?
+ *Instructional menus
+ */
+
+  static void ext1_load(){
+  enqueue_and_echo_commands_P(PSTR("G91\nG1 Z5\nG28 X0 Y0\nM109 S220 T0\nG91\nG1 F5000 E390 T0\nG1 F235 E160 T0\nG90\nM104 S0 T0")); 
+  lcd_return_to_status();
+  }
+
+   static void ext2_load(){
+  //while (LCD_CLICKED, false) {  //TRY THIS VOID LOOP
+    //enqueue_and_echo_commands_P(PSTR("G91\nG1 F1000\nG1 E2 T1"));
+    //}
+  enqueue_and_echo_commands_P(PSTR("G91\nG1 Z5\nG28 X0 Y0\nM109 S220 T1\nG91\nG1 F5000 E390 T1\nG1 F235 E160 T1\nG90\nM104 S0 T1"));
+  lcd_return_to_status();
+  }
+
+  static void ext1_unload(){
+  enqueue_and_echo_commands_P(PSTR("G91\nM109 S220 T0\nG1 F6000\nG1 E-600 T0\nG90\nM104 S0 T0"));
+  lcd_return_to_status();
+  }
+  
+  static void ext2_unload(){
+  enqueue_and_echo_commands_P(PSTR("G91\nM109 S220 T1\nG1 F6000\nG1 E-600 T1\nG90\nM104 S0 T1"));
+  lcd_return_to_status();
+  }
+  
+  static void lcd_lu_ext1(){
+  START_MENU();
+  MENU_ITEM(back, MSG_EXT1);
+  MENU_ITEM(function, MSG_LOAD, ext1_load); //Use the stop on click code
+  MENU_ITEM(function, MSG_UNLOAD, ext1_unload); 
+  END_MENU();
+  }
+ 
+  static void lcd_lu_ext2(){
+  START_MENU();
+  MENU_ITEM(back, MSG_EXT2);
+  MENU_ITEM(function, MSG_LOAD, ext2_load); //use the stop on click code
+  MENU_ITEM(function, MSG_UNLOAD, ext2_unload); 
+  END_MENU();
+  }
+ 
+  static void lcd_load_unload_menu(){
+  START_MENU();
+  MENU_ITEM(back,MSG_PREPARE);
+  MENU_ITEM(submenu, MSG_EXT1, lcd_lu_ext1 );
+  MENU_ITEM(submenu, MSG_EXT2, lcd_lu_ext2);
+  END_MENU();
+  }
+
+ /**
+  static void lcd_utilities_menu() {
+  START_MENU();
+  MENU_ITEM(back,MSG_MAIN);
+  MENU_ITEM(submenu, MSG_LOAD_UNLOAD, lcd_load_unload_menu);
+  END_MENU();
+  }
+  */
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 static void lcd_main_menu() {
   START_MENU();
   MENU_ITEM(back, MSG_WATCH);
+  
   if (movesplanned() || IS_SD_PRINTING) {
     MENU_ITEM(submenu, MSG_TUNE, lcd_tune_menu);
   }
@@ -875,6 +956,7 @@ void lcd_cooldown() {
   #endif
   disable_all_heaters();
   lcd_return_to_status();
+  lcd_setstatus(WELCOME_MSG, true); //XMachines
 }
 
 #if ENABLED(SDSUPPORT) && ENABLED(MENU_ADDAUTOSTART)
@@ -1085,12 +1167,43 @@ void lcd_cooldown() {
 
 #endif  // MANUAL_BED_LEVELING
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+//Step 5 - Var is saved to Z-Offset. Conclusion Page. Click Wheel to return to main menu
+  static void lcd_sequence_conclusion() {
+  START_MENU();
+  MENU_ITEM(submenu, MSG_SUMMARY, lcd_status_screen);
+  END_MENU();
+}
+
+//Step 4 - Third point
+
+//Step 3 - Runs Sequence to P2 and prompts user to turn knob to touch bed. Click When done
+
+//Step 2 - Runs Sequence and prompts user to turn knob to lower z to touch bed, click when done. That click stores the Z value to some var
+  static void lcd_sequence_P1() {
+  START_MENU();
+  MENU_ITEM(gcode, MSG_SUMMARY, PSTR("M851 Z0\nG91\nG0 Z5\nG90\nG28\nG29\nG1 X115 Y10 Z0\nM84")); //Add to end of sequence M500\n
+  MENU_ITEM(submenu, MSG_CONTINUE, lcd_sequence_conclusion);
+  END_MENU();
+}
+
+//Step 1 - Summary Page. Click wheel to begin
+ static void lcd_set_z_offset_menu() {
+  START_MENU();
+  MENU_ITEM(back, MSG_PREPARE);
+  MENU_ITEM(submenu, MSG_START_SEQUENCE, lcd_sequence_P1);
+//  MENU_ITEM(cancel, MSG_PREPARE);
+  END_MENU();
+}
+*/
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 /**
  *
  * "Prepare" submenu
  *
  */
-
 static void lcd_prepare_menu() {
   START_MENU();
 
@@ -1099,37 +1212,42 @@ static void lcd_prepare_menu() {
   //
   MENU_ITEM(back, MSG_MAIN);
 
+
   //
   // Auto Home
   //
   MENU_ITEM(gcode, MSG_AUTO_HOME, PSTR("G28"));
+  
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///
+  //NEW Section For Auto-Z Calibrate XMachines
+  //
+  //MENU_ITEM(submenu , MSG_CALIBRATE_Z , lcd_set_z_offset_menu); //Click this to see summary page
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   //
   // Set Home Offsets
   //
-  MENU_ITEM(function, MSG_SET_HOME_OFFSETS, lcd_set_home_offsets);
+  //MENU_ITEM(function, MSG_SET_HOME_OFFSETS, lcd_set_home_offsets); //this one was commented
   //MENU_ITEM(gcode, MSG_SET_ORIGIN, PSTR("G92 X0 Y0 Z0"));
 
   //
   // Level Bed
   //
-  #if ENABLED(AUTO_BED_LEVELING_FEATURE)
-    MENU_ITEM(gcode, MSG_LEVEL_BED,
-      axis_homed[X_AXIS] && axis_homed[Y_AXIS] ? PSTR("G29") : PSTR("G28\nG29")
-    );
-  #elif ENABLED(MANUAL_BED_LEVELING)
-    MENU_ITEM(submenu, MSG_LEVEL_BED, lcd_level_bed);
-  #endif
+  //#if ENABLED(AUTO_BED_LEVELING_FEATURE)  //This entire section was commented in
+    //MENU_ITEM(gcode, MSG_LEVEL_BED,
+      //axis_homed[X_AXIS] && axis_homed[Y_AXIS] ? PSTR("G29") : PSTR("G28\nG29")
+   // );
+  //#elif ENABLED(MANUAL_BED_LEVELING)
+    //MENU_ITEM(submenu, MSG_LEVEL_BED, lcd_level_bed);
+  //#endif
 
   //
   // Move Axis
   //
   MENU_ITEM(submenu, MSG_MOVE_AXIS, lcd_move_menu);
-
-  //
-  // Disable Steppers
-  //
-  MENU_ITEM(gcode, MSG_DISABLE_STEPPERS, PSTR("M84"));
 
   //
   // Preheat PLA
@@ -1144,6 +1262,16 @@ static void lcd_prepare_menu() {
       MENU_ITEM(function, MSG_PREHEAT_ABS, lcd_preheat_abs0);
     #endif
   #endif
+
+  //
+  //Load/Unload Filament
+  //
+  //MENU_ITEM(submenu, MSG_LOAD_UNLOAD, lcd_load_unload_menu); //XMachines
+
+  //
+  // Disable Steppers
+  //
+  MENU_ITEM(gcode, MSG_DISABLE_STEPPERS, PSTR("M84"));
 
   //
   // Cooldown
@@ -1184,7 +1312,6 @@ static void lcd_prepare_menu() {
   }
 
 #endif // DELTA_CALIBRATION_MENU
-
 /**
  *
  * "Prepare" > "Move Axis" submenu
@@ -1288,8 +1415,8 @@ static void _lcd_move_menu_axis() {
     MENU_ITEM(submenu, MSG_MOVE_X, lcd_move_x);
     MENU_ITEM(submenu, MSG_MOVE_Y, lcd_move_y);
   }
+  if (_MOVE_XYZ_ALLOWED) MENU_ITEM(submenu, MSG_MOVE_Z, lcd_move_z);
   if (move_menu_scale < 10.0) {
-    if (_MOVE_XYZ_ALLOWED) MENU_ITEM(submenu, MSG_MOVE_Z, lcd_move_z);
     #if EXTRUDERS == 1
       MENU_ITEM(submenu, MSG_MOVE_E, lcd_move_e);
     #else
@@ -1318,6 +1445,7 @@ static void lcd_move_menu_01mm() {
   move_menu_scale = 0.1;
   _lcd_move_menu_axis();
 }
+
 
 /**
  *
@@ -1372,6 +1500,7 @@ static void lcd_control_menu() {
  *
  */
 
+/* //DELETED PID HERE
 #if ENABLED(PID_AUTOTUNE_MENU)
 
   #if ENABLED(PIDTEMP)
@@ -1443,6 +1572,8 @@ static void lcd_control_menu() {
   #endif //PID_PARAMS_PER_EXTRUDER
 
 #endif //PIDTEMP
+*/
+
 
 /**
  *
@@ -1514,12 +1645,12 @@ static void lcd_control_temperature_menu() {
   //
   // Autotemp, Min, Max, Fact
   //
-  #if ENABLED(AUTOTEMP) && (TEMP_SENSOR_0 != 0)
-    MENU_ITEM_EDIT(bool, MSG_AUTOTEMP, &autotemp_enabled);
-    MENU_ITEM_EDIT(float3, MSG_MIN, &autotemp_min, 0, HEATER_0_MAXTEMP - 15);
-    MENU_ITEM_EDIT(float3, MSG_MAX, &autotemp_max, 0, HEATER_0_MAXTEMP - 15);
-    MENU_ITEM_EDIT(float32, MSG_FACTOR, &autotemp_factor, 0.0, 1.0);
-  #endif
+  //#if ENABLED(AUTOTEMP) && (TEMP_SENSOR_0 != 0)
+    //MENU_ITEM_EDIT(bool, MSG_AUTOTEMP, &autotemp_enabled);
+    //MENU_ITEM_EDIT(float3, MSG_MIN, &autotemp_min, 0, HEATER_0_MAXTEMP - 15);
+    //MENU_ITEM_EDIT(float3, MSG_MAX, &autotemp_max, 0, HEATER_0_MAXTEMP - 15);
+    //MENU_ITEM_EDIT(float32, MSG_FACTOR, &autotemp_factor, 0.0, 1.0);
+  //#endif
 
   //
   // PID-P, PID-I, PID-D, PID-C, PID Autotune
@@ -1528,6 +1659,8 @@ static void lcd_control_temperature_menu() {
   // PID-P E3, PID-I E3, PID-D E3, PID-C E3, PID Autotune E3
   // PID-P E4, PID-I E4, PID-D E4, PID-C E4, PID Autotune E4
   //
+  //DELETED PID HERE
+  /*
   #if ENABLED(PIDTEMP)
 
     #define _PID_BASE_MENU_ITEMS(ELABEL, eindex) \
@@ -1567,6 +1700,7 @@ static void lcd_control_temperature_menu() {
     #endif //!PID_PARAMS_PER_EXTRUDER || EXTRUDERS == 1
 
   #endif //PIDTEMP
+  */
 
   //
   // Preheat PLA conf
@@ -1683,7 +1817,6 @@ static void lcd_control_motion_menu() {
 static void lcd_control_volumetric_menu() {
   START_MENU();
   MENU_ITEM(back, MSG_CONTROL);
-
   MENU_ITEM_EDIT_CALLBACK(bool, MSG_VOLUMETRIC_ENABLED, &volumetric_enabled, calculate_volumetric_multipliers);
 
   if (volumetric_enabled) {
@@ -2757,5 +2890,4 @@ char* ftostr52(const float& x) {
   conv[7] = 0;
   return conv;
 }
-
 #endif // ULTRA_LCD

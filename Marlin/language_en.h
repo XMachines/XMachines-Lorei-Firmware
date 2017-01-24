@@ -1,3 +1,5 @@
+//XMachines Edits
+
 /**
  * Marlin 3D Printer Firmware
  * Copyright (C) 2016 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
@@ -62,8 +64,62 @@
   #define MSG_DISABLE_STEPPERS                "Disable steppers"
 #endif
 #ifndef MSG_AUTO_HOME
-  #define MSG_AUTO_HOME                       "Auto home"
+  #define MSG_AUTO_HOME                       "Home Printer" //Was Auto home
 #endif
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Library XMachines Have Added
+#ifndef MSG_PRINTING
+  #define MSG_PRINTING                         "Printing"
+#endif
+#ifndef MSG_CALIBRATE_Z
+  #define MSG_CALIBRATE_Z                      "Calibrate Z"
+#endif
+#ifndef MSG_CLEAR_Z
+  #define MSG_CLEAR_Z                         "Start Sequence"
+#endif
+#ifndef MSG_PAUSE
+  #define MSG_PAUSE                           "Print Paused"
+#endif
+#ifndef MSG_RETRACT_FIL
+  #define MSG_RETRACT_FIL                     "Retract Filament"
+#endif
+#ifndef MSG_LOAD_UNLOAD_FIL
+  #define MSG_LOAD_UNLOAD_FIL                 "Load Filament"
+#endif
+
+#ifndef MSG_SUMMARY
+  #define MSG_SUMMARY                         "Turn Knob Till" "Nozzle Touches Bed"
+#endif
+#ifndef MSG_START_SEQUENCE
+  #define MSG_START_SEQUENCE                  "Click to Begin"
+#endif
+#ifndef MSG_CONTINUE
+  #define MSG_CONTINUE                        "Click to continue"
+#endif
+#ifndef MSG_LOAD_UNLOAD
+  #define MSG_LOAD_UNLOAD                     "Load/Unload Filament"
+#endif
+#ifndef MSG_LOAD
+  #define MSG_LOAD                            "Load Filament"
+#endif
+#ifndef MSG_UNLOAD
+  #define MSG_UNLOAD                          "Unload Filament"
+#endif
+#ifndef MSG_EXT1
+  #define MSG_EXT1                            "Left Extruder"
+#endif
+#ifndef MSG_EXT2
+  #define MSG_EXT2                            "Right Extruder"
+#endif
+#ifndef MSG_UTILITIES
+  #define MSG_UTILITIES                       "Utilities"
+#endif 
+#ifndef MSG_LOADED
+  #define MSG_LOADED                          "Filament Loaded"
+#endif
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 #ifndef MSG_LEVEL_BED_HOMING
   #define MSG_LEVEL_BED_HOMING                "Homing XYZ"
 #endif
@@ -119,10 +175,10 @@
   #define MSG_PREHEAT_ABS_SETTINGS            MSG_PREHEAT_ABS " conf"
 #endif
 #ifndef MSG_H1
-  #define MSG_H1                              "Left"   ///////"1"///////changed
+  #define MSG_H1                              "Left"   
 #endif
 #ifndef MSG_H2
-  #define MSG_H2                              "Right"     /////////"2"//////changed
+  #define MSG_H2                              "Right"  
 #endif
 #ifndef MSG_H3
   #define MSG_H3                              "3"
@@ -164,10 +220,10 @@
   #define MSG_MOVE_E                          "Extruder "
 #endif
 #ifndef MSG_MOVE_E1
-  #define MSG_MOVE_E1                         "Left"       ////////"1"//////change
+  #define MSG_MOVE_E1                         "Left"   
 #endif
 #ifndef MSG_MOVE_E2
-  #define MSG_MOVE_E2                         "Right"        /////////"2"//////change
+  #define MSG_MOVE_E2                         "Right"      
 #endif
 #ifndef MSG_MOVE_E3
   #define MSG_MOVE_E3                         "3"
@@ -194,10 +250,10 @@
   #define MSG_NOZZLE                          "Nozzle"
 #endif
 #ifndef MSG_N1
-  #define MSG_N1                              " Left"       ////////"1"/////change
+  #define MSG_N1                              " Left"       
 #endif
 #ifndef MSG_N2
-  #define MSG_N2                              " Right"          ///////"2"//////change
+  #define MSG_N2                              " Right"    
 #endif
 #ifndef MSG_N3
   #define MSG_N3                              " 3"
@@ -485,7 +541,7 @@
   #define MSG_HEATING                         "Heating..."
 #endif
 #ifndef MSG_HEATING_COMPLETE
-  #define MSG_HEATING_COMPLETE                "Printing" ///////"Heating Done"///////change///////Can you get it to say "Printing" File_Name
+  #define MSG_HEATING_COMPLETE                "Heating Done" ///////"Heating Done"///////change///////Can you get it to say "Printing" File_Name
 #endif
 #ifndef MSG_BED_HEATING
   #define MSG_BED_HEATING                     "Bed Heating."

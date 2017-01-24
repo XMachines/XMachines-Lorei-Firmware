@@ -1,3 +1,6 @@
+//XMACHINES Lorei Firmware
+//Lorei 3D Printer
+
 //DEFINE THE PRINTER TYPE:
 
 //How many extruders?
@@ -13,7 +16,18 @@
 //  9x9: Enter 9
 //  12x12: Enter 12
 //  Mega: Enter 0
-#define BED_SIZE 12
+#define BED_SIZE 9
+
+
+//Version: Release Date 01/04/17
+#define VERSION "1.1.0"
+/**
+ * New Features Include:
+
+ * Updated pause/resume script
+ * New Splashscreen
+ */
+
 
 
 /**
@@ -112,7 +126,7 @@
 
 // Optional custom name for your RepStrap or other custom machine
 // Displayed in the LCD "Ready" message
-#define CUSTOM_MACHINE_NAME "Lorei" ////custom printer name///
+#define CUSTOM_MACHINE_NAME "Lorei"
 
 // Define this to set a unique identifier for this printer, (Used by some programs to differentiate between machines)
 // You can use an online service to generate a random UUID. (eg http://www.uuidgenerator.net/version4)
@@ -417,7 +431,7 @@ const bool Z_MIN_PROBE_ENDSTOP_INVERTING = false; // set to true to invert the l
 // Setting the wrong pin may have unexpected and potentially disastrous consequences.
 // Use with caution and do your homework.
 //
-#define Z_MIN_PROBE_ENDSTOP ////commented////
+#define Z_MIN_PROBE_ENDSTOP
 
 // Enable Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN to use the Z_MIN_PIN for your Z_MIN_PROBE.
 // The Z_MIN_PIN will then be used for both Z-homing and probing.
@@ -767,11 +781,11 @@ const bool Z_MIN_PROBE_ENDSTOP_INVERTING = false; // set to true to invert the l
 // EEPROM
 //
 // The microcontroller can store settings in the EEPROM, e.g. max velocity...
-// M500 - stores parameters in EEPROM   ////
+// M500 - stores parameters in EEPROM 
 // M501 - reads parameters from EEPROM (if you need reset them after you changed them temporarily).
 // M502 - reverts to the default "factory settings".  You still need to store them in EEPROM afterwards if you want to.
 //define this to enable EEPROM support
-#define EEPROM_SETTINGS  ////commented in to enable EEPROM settings//////
+#define EEPROM_SETTINGS
 
 #if ENABLED(EEPROM_SETTINGS)
   // To disable EEPROM Serial responses and decrease program space by ~1700 byte: comment this out:
@@ -802,8 +816,10 @@ const bool Z_MIN_PROBE_ENDSTOP_INVERTING = false; // set to true to invert the l
 #define PLA_PREHEAT_FAN_SPEED 0   // Insert Value between 0 and 255
 
 #define ABS_PREHEAT_HOTEND_TEMP 230
-#define ABS_PREHEAT_HPB_TEMP 105
+#define ABS_PREHEAT_HPB_TEMP 90
 #define ABS_PREHEAT_FAN_SPEED 0   // Insert Value between 0 and 255
+
+
 
 //=============================================================================
 //============================= LCD and SD support ============================
